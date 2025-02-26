@@ -25,7 +25,7 @@ Base = declarative_base()
 openai.api_key = 'YOUR_OPENAI_API_KEY'  # OpenAI API 키
 
 # ✅ FastAPI 앱 생성
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 # CORS 설정
 origins = [
