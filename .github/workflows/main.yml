@@ -11,36 +11,39 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # GitHub 레포지토리 코드 가져오기
+
+      - name: Configure Docker Daemon (Allow HTTP Registry)
+        run: |
+          echo '{ "insecure-registries": ["${{ secrets.JARVIS_DOMAIN }}:5000"] }' | sudo tee /etc/docker/daemon.json
+          sudo systemctl restart docker
+
+      - name: Login to Private Registry
+        run: |
+          echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login ${{ secrets.JARVIS_DOMAIN }}:5000 \
+            -u ${{ secrets.NCP_REGISTRY_USER }} --password-stdin
 
       - name: Build Docker Image
         run: |
-          docker build -t fastapi-app .
+          docker build -t ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app .
 
-      - name: Save Docker Image as TAR
+      - name: Push Docker Image to Private Registry
         run: |
-          mkdir -p /tmp/docker_images
-          docker save -o /tmp/docker_images/fastapi-app.tar fastapi-app
-          ls -l /tmp/docker_images/  # 🔍 파일이 정상적으로 생성되었는지 확인
+          docker push ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
 
-      - name: Copy Docker Image to NCP Server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.NCP_SERVER_IP }}
-          username: root
-          key: ${{ secrets.NCP_SSH_PRIVATE_KEY }}
-          source: "/tmp/docker_images/fastapi-app.tar"
-          target: "/home/ubuntu/"
-
-      - name: Deploy to NCP Server
+      - name: Deploy to NCP Server (Password Authentication)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_SERVER_IP }}
           username: root
-          key: ${{ secrets.NCP_SSH_PRIVATE_KEY }}
+          password: ${{ secrets.NCP_SSH_PASSWORD }}
           script: |
-            cd /home/ubuntu/
-            docker load -i fastapi-app.tar
+            echo '{ "insecure-registries": ["${{ secrets.JARVIS_DOMAIN }}:5000"] }' | sudo tee /etc/docker/daemon.json
+            sudo systemctl restart docker
+            echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login ${{ secrets.JARVIS_DOMAIN }}:5000 \
+              -u ${{ secrets.NCP_REGISTRY_USER }} --password-stdin
+            docker pull ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
             docker stop fastapi-container || true
             docker rm fastapi-container || true
-            docker run -d --name fastapi-container -p 8000:8000 fastapi-app
+            docker run -d --name fastapi-container --restart=always -p 8000:8000 \
+              ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app

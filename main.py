@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -9,6 +9,7 @@ import requests
 from pydantic import BaseModel
 import openai
 from uuid import uuid4
+from dotenv import load_dotenv  # dotenv 모듈 임포트
 
 # ✅ 데이터베이스 설정 (기본: SQLite)
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://jhy:wjdghdus1!@gb-prod.c9wgecae8edg.ap-northeast-2.rds.amazonaws.com:3306/ktbdb")  # MySQL 또는 PostgreSQL로 변경 가능
@@ -20,12 +21,18 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # ✅ SQLAlchemy 모델 기본 클래스
 Base = declarative_base()
 
-# GitHub Personal Access Token
+
+# .env 파일에서 환경 변수 로드
+load_dotenv()
+
+# GITHUB_TOKEN과 GITHUB_USERNAME을 환경 변수로 불러오기
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
 
 openai.api_key = 'YOUR_OPENAI_API_KEY'  # OpenAI API 키
 
 # ✅ FastAPI 앱 생성
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 # CORS 설정
 origins = [
@@ -76,14 +83,22 @@ def create_github_repo(repo_name: str):
 
     response = requests.post(url, json=data, headers=headers)
 
+    repo_url = response.json()
+    # print(response.json())
+
     if response.status_code == 201:
         repo_url = response.json()["ssh_url"]
         return {"message": f"Repository '{repo_name}' created successfully!", "repo_url": repo_url}
     else:
-        raise HTTPException(status_code=response.status_code, detail="Failed to create repository")
+        error_message = response.json()["errors"][0]["message"] if "errors" in response.json() else "Failed to create repository"
+        raise HTTPException(status_code=response.status_code, detail=error_message)
+
+class RepoCreate(BaseModel):
+    repo_name: str
 
 # 레포지토리 생성 API
 @app.post("/create-repo/")
-async def create_repo(repo_name: str):
-    result = create_github_repo(repo_name)
+async def create_repo(repo: RepoCreate):
+    # print(f"Received repo_name: {repo.repo_name}")
+    result = create_github_repo(repo.repo_name)
     return result
