@@ -13,6 +13,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3  # GitHub 레포지토리 코드 가져오기
 
+      - name: Login to Private Registry
+        run: |
+          echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login ${{ secrets.JARVIS_DOMAIN }}:5000 \
+            -u ${{ secrets.NCP_REGISTRY_USER }} --password-stdin
+
       - name: Build Docker Image
         run: |
           docker build -t ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app .
@@ -28,8 +33,10 @@ jobs:
           username: root
           key: ${{ secrets.NCP_SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.NCP_SERVER_IP }}:5000/fastapi-app
+            echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login ${{ secrets.JARVIS_DOMAIN }}:5000 \
+              -u ${{ secrets.NCP_REGISTRY_USER }} --password-stdin
+            docker pull ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
             docker stop fastapi-container || true
             docker rm fastapi-container || true
-            docker run -d --name fastapi-container -p 8000:8000 ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
-            
+            docker run -d --name fastapi-container --restart=always -p 8000:8000 \
+              ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
