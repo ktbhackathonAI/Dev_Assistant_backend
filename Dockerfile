@@ -8,6 +8,9 @@ FROM python:3.10
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# 4. 환경 변수 파일 추가
+COPY .env .env
+
 # 4. 애플리케이션 코드 복사
 COPY . .
 
