@@ -31,12 +31,12 @@ jobs:
         run: |
           docker push ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
 
-      - name: Deploy to NCP Server
+      - name: Deploy to NCP Server (Password Authentication)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_SERVER_IP }}
           username: root
-          key: ${{ secrets.NCP_SSH_PRIVATE_KEY }}
+          password: ${{ secrets.NCP_SSH_PASSWORD }}
           script: |
             echo '{ "insecure-registries": ["${{ secrets.JARVIS_DOMAIN }}:5000"] }' | sudo tee /etc/docker/daemon.json
             sudo systemctl restart docker
@@ -47,4 +47,3 @@ jobs:
             docker rm fastapi-container || true
             docker run -d --name fastapi-container --restart=always -p 8000:8000 \
               ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
-              
