@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 import os
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +12,10 @@ from uuid import uuid4
 from dotenv import load_dotenv  # dotenv 모듈 임포트
 import git
 import base64
+
+from models import ChatRoom, Chat, ChatRoomCreate, ChatCreate, ChatRoomBase, ChatBase
+from database import Base
+from typing import List
 
 # ✅ 데이터베이스 설정 (기본: SQLite)
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://jhy:wjdghdus1!@gb-prod.c9wgecae8edg.ap-northeast-2.rds.amazonaws.com:3306/ktbdb")  # MySQL 또는 PostgreSQL로 변경 가능
@@ -67,7 +71,9 @@ def root():
     # return {"message": "Welcome to FastAPI Post CRUD API"}
     return {"message": "나 시작했다고"}
 
-
+'''
+    깃허브 기능 관련 함수들
+'''
 
 # 레포지토리 생성 함수
 def create_github_repo(repo_name: str):
@@ -129,8 +135,15 @@ def push_skeleton_file_to_repo(repo_name: str, file_path: str, relative_path: st
         raise HTTPException(status_code=response.status_code, detail=error_message)
 
 
+'''
+    채팅방 기능 관련 함수들
+'''
 
 
+
+'''
+    깃허브 기능 관련 API 메소드
+'''
 class RepoCreate(BaseModel):
     repo_name: str
 
@@ -174,3 +187,33 @@ async def push_skeleton_files(request: RepoCreate):
             results[relative_path] = {"error": str(e.detail)}
 
     return {"results": results}
+
+
+'''
+    채팅방 기능 관련 API 메소드
+'''
+# 채팅방 생성
+@app.post("/chat_rooms/", response_model=ChatRoomBase)
+def create_chat_room(chat_room: ChatRoomCreate, db: Session = Depends(get_db)):
+    db_chat_room = ChatRoom(name=chat_room.name, repo_url=chat_room.repo_url)
+    db.add(db_chat_room)
+    db.commit()
+    db.refresh(db_chat_room)
+    return db_chat_room
+
+# 채팅 내용 생성
+@app.post("/chats/", response_model=ChatBase)
+def create_chat(chat: ChatCreate, db: Session = Depends(get_db)):
+    db_chat = Chat(content=chat.content, room_id=chat.room_id)
+    db.add(db_chat)
+    db.commit()
+    db.refresh(db_chat)
+    return db_chat
+
+# 채팅방 내 모든 대화 내용 조회
+@app.get("/chat_rooms/{room_id}/chats", response_model=List[ChatBase])
+def get_chats_in_room(room_id: int, db: Session = Depends(get_db)):
+    db_chats = db.query(Chat).filter(Chat.room_id == room_id).all()
+    if not db_chats:
+        raise HTTPException(status_code=404, detail="No chats found in this chat room")
+    return db_chats
