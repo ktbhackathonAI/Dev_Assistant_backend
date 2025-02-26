@@ -1,4 +1,6 @@
-fastapi==0.115.8
-pydantic==2.10.6
-SQLAlchemy==2.0.38
-uvicorn==0.23.2
+fastapi          # FastAPI 프레임워크
+uvicorn          # ASGI 서버
+sqlalchemy       # ORM 및 데이터베이스 연동
+pymysql          # MySQL 드라이버
+python-dotenv    # .env 파일 환경 변수 로드
+aiohttp          # 비동기 HTTP 요청 처리
