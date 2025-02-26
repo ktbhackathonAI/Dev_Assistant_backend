@@ -13,10 +13,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3  # GitHub 레포지토리 코드 가져오기
 
-      - name: Login to Private Registry
-        run: |
-          echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login ${{ secrets.JARVIS_DOMAIN }}:5000 \
-            -u ${{ secrets.NCP_REGISTRY_USER }} --password-stdin
+      # - name: Login to Private Registry
+      #   run: |
+      #     echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login ${{ secrets.JARVIS_DOMAIN }}:5000 \
+      #       -u ${{ secrets.NCP_REGISTRY_USER }} --password-stdin
 
       - name: Build Docker Image
         run: |
