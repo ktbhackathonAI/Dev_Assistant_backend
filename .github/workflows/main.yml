@@ -31,4 +31,4 @@ jobs:
             docker pull ${{ secrets.NCP_SERVER_IP }}:5000/fastapi-app
             docker stop fastapi-container || true
             docker rm fastapi-container || true
-            docker run -d --name fastapi-container -p 8000:8000 ${{ secrets.NCP_SERVER_IP }}:5000/fastapi-app
+            docker run -d --name fastapi-container -p 8000:8000 ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
