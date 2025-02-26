@@ -2,6 +2,7 @@ import base64
 import os
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
+from git import Optional
 from pydantic import BaseModel
 import requests
 
@@ -75,7 +76,8 @@ def push_skeleton_file_to_repo(repo_name: str, file_path: str, relative_path: st
 
 
 class RepoCreate(BaseModel):
-    repo_name: str
+    source_url: Optional[str]
+    repo_name: Optional[str]
 
 # 레포지토리 생성 API
 @router.post("/create-repo/")
@@ -93,6 +95,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SKELETONS_DIR = os.path.join(PROJECT_ROOT, "skeletons")
 # print(f"skeletons_dir: {SKELETONS_DIR}")
 
+BASE_DIR = "app/data/generate_projects"
 
 # 파일 푸시 API
 @router.post("/push-files/")
@@ -101,19 +104,28 @@ async def push_skeleton_files(request: RepoCreate):
     로컬 디렉터리 내 모든 파일을 GitHub 레포지토리에 푸시
     """
     repo_name = request.repo_name
+
+    # Repository 생성
+    create_github_repo(repo_name)
+
+    project_dir = os.path.join(BASE_DIR, repo_name)  # 각 프로젝트에 해당하는 디렉터리 경로
+
+    # 해당 프로젝트 디렉터리가 존재하지 않으면 오류 발생
+    if not os.path.exists(project_dir):
+        raise HTTPException(status_code=400, detail=f"Project directory '{project_dir}' does not exist.")
     
-    if not os.path.exists(SKELETONS_DIR):
-        raise HTTPException(status_code=400, detail=f"Skeleton directory '{repo_name}' does not exist in '{SKELETONS_DIR}'")
-
     # 모든 파일 경로 가져오기
-    files = get_all_files(SKELETONS_DIR)
-    # print(f"files in push-files method: {files}")
+    files = get_all_files(project_dir)
 
+    # 결과 저장할 딕셔너리
     results = {}
+
     for full_path, relative_path in files:
         try:
+            # 파일을 GitHub 레포지토리에 푸시
             results[relative_path] = push_skeleton_file_to_repo(repo_name, full_path, relative_path)
         except HTTPException as e:
+            # 오류 발생 시 그 파일은 처리되지 않음
             results[relative_path] = {"error": str(e.detail)}
 
     return {"results": results}
