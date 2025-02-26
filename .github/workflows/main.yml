@@ -47,3 +47,4 @@ jobs:
             docker rm fastapi-container || true
             docker run -d --name fastapi-container --restart=always -p 8000:8000 \
               ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
+              
