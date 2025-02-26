@@ -9,21 +9,9 @@ class ChatRoom(Base):
     name = Column(String(255))
     repo_url = Column(String(255))
 
-    # 관계 정의 (반대 방향)
-    chats = relationship("Chat", back_populates="room")
-
-    def __repr__(self):
-        return f"<ChatRoom(id={self.id}, name={self.name})>"
-
 class Chat(Base):
     __tablename__ = 'chat'
 
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text)
     room_id = Column(Integer, ForeignKey('chat_room.id'))
-
-    # 관계 정의 (반대 방향)
-    room = relationship("ChatRoom", back_populates="chats")
-
-    def __repr__(self):
-        return f"<Chat(id={self.id}, content={self.content})>"

@@ -11,7 +11,7 @@ import openai
 from uuid import uuid4
 
 # ✅ 데이터베이스 설정 (기본: SQLite)
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")  # MySQL 또는 PostgreSQL로 변경 가능
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://jhy:wjdghdus1!@gb-prod.c9wgecae8edg.ap-northeast-2.rds.amazonaws.com:3306/ktbdb")  # MySQL 또는 PostgreSQL로 변경 가능
 
 # ✅ SQLAlchemy 엔진 및 세션 생성
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
