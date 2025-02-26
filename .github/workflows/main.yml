@@ -19,7 +19,6 @@ jobs:
 
       - name: Push Docker Image to Private Registry
         run: |
-          docker login ${{ secrets.NCP_SERVER_IP }}:5000
           docker push ${{ secrets.NCP_SERVER_IP }}:5000/fastapi-app
 
       - name: Deploy to NCP Server
