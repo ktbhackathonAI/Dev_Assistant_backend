@@ -13,6 +13,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3  # GitHub 레포지토리 코드 가져오기
 
+      - name: Create .env File
+        run: |
+          echo "GITHUB_TOKEN=${{ secrets.ENV_GITHUB_TOKEN }}" >> .env
+          echo "GITHUB_USERNAME=${{ secrets.ENV_GITHUB_USERNAME }}" >> .env
+
       - name: Configure Docker Daemon (Allow HTTP Registry)
         run: |
           echo '{ "insecure-registries": ["${{ secrets.JARVIS_DOMAIN }}:5000"] }' | sudo tee /etc/docker/daemon.json
