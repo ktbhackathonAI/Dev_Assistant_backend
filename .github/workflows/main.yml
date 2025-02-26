@@ -15,11 +15,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ${{ secrets.NCP_SERVER_IP }}:5000/fastapi-app .
+          docker build -t ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app .
 
       - name: Push Docker Image to Private Registry
         run: |
-          docker push ${{ secrets.NCP_SERVER_IP }}:5000/fastapi-app
+          docker push ${{ secrets.JARVIS_DOMAIN }}:5000/fastapi-app
 
       - name: Deploy to NCP Server
         uses: appleboy/ssh-action@master
