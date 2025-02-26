@@ -42,4 +42,4 @@ jobs:
             docker load -i fastapi-app.tar
             docker stop fastapi-container || true
             docker rm fastapi-container || true
-            docker run -d --name fastapi-container -p 80:80 fastapi-app
+            docker run -d --name fastapi-container -p 8000:8000 fastapi-app
