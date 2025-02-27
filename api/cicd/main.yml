@@ -44,9 +44,9 @@ jobs:
       - name: Deploy to NCP Server (Password Authentication)
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.NCP_SERVER_IP }}
+          host: ${{ secrets.NCP_DEV_SERVER_IP }}
           username: root
-          password: ${{ secrets.NCP_SSH_PASSWORD }}
+          password: ${{ secrets.NCP_DEV_SSH_PASSWORD }}
           script: |
             echo '{ "insecure-registries": ["${{ secrets.JARVIS_DOMAIN }}:5000"] }' | sudo tee /etc/docker/daemon.json
             sudo systemctl restart docker
