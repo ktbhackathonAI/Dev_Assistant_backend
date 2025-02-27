@@ -4,8 +4,18 @@ from sqlalchemy.orm import Session
 from core.database import get_db
 from core.models import ChatRoom, Message
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import asyncio
 import json
+import aiohttp
+import os
+
+# .env 파일에서 환경 변수 로드
+load_dotenv()
+
+# 환경 변수에서 AI_LANGCHAIN_URL 가져오기
+AI_LANGCHAIN_URL = os.getenv("AI_LANGCHAIN_URL", "http://localhost:8001")  # 기본값 설정
+PROCESS_TEST_URL = f"{AI_LANGCHAIN_URL}/process-test/"  # 최종 URL 구성
 
 router = APIRouter()
 
