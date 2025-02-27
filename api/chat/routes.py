@@ -141,11 +141,11 @@ async def send_message(room_id: int, message: MessageCreate, db: Session = Depen
 
             # makecode 경우: 스트리밍으로 GitHub 처리
             elif key == "project_folder_list":
-                filelist = value
+                filelist = [v.replace("/root/docker","/app/data") for v in value]
                 repo_name = f"auto-repo-{room_id}"
                 # print("파일제작")
                 # print("filelist")
-                # print(filelist)
+                print(filelist)
                 # print("repo_name")
                 # print(repo_name)
 
