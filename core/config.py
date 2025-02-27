@@ -12,10 +12,18 @@ class Settings:
 
     # GitHub 액세스 토큰
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")  # GitHub API 호출에 사용
+    GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
 
     # 외부 서버 URL
     FRONTEND_URL = os.getenv("FRONTEND_URL")  # 프론트엔드 서버와 통신
     AI_LANGCHAIN_URL = os.getenv("AI_LANGCHAIN_URL")  # AI 서버와 통신
+
+    # 배포를 위한 변수들
+    NCP_DEV_SERVER_IP = os.getenv("NCP_DEV_SERVER_IP")
+    NCP_DEV_SSH_PASSWORD = os.getenv("NCP_DEV_SSH_PASSWORD")
+    NCP_REGISTRY_USER = os.getenv("NCP_REGISTRY_USER")
+    NCP_REGISTRY_PASSWORD = os.getenv("NCP_REGISTRY_PASSWORD")
+    JARVIS_DOMAIN = os.getenv("JARVIS_DOMAIN")
 
 
 # 설정 객체 인스턴스 생성

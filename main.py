@@ -5,6 +5,7 @@ from core.config import settings  # 환경 변수 로드
 from api.chat.routes import router as chat_router
 from api.ai.routes import router as ai_router
 from api.github.routes import router as github_router
+from api.cicd.routes import router as cicd_router
 
 # FastAPI 애플리케이션 인스턴스 생성
 app = FastAPI()
@@ -31,6 +32,7 @@ Base.metadata.create_all(bind=engine)
 app.include_router(chat_router, prefix="/chat", tags=["chat"])
 app.include_router(ai_router, prefix="/ai", tags=["ai"])
 app.include_router(github_router, prefix="/github", tags=["github"])
+app.include_router(cicd_router, prefix="/cicd", tags=["cicd"])
 
 # 루트 엔드포인트
 @app.get("/")

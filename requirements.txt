@@ -5,3 +5,4 @@ pymysql          # MySQL 드라이버
 python-dotenv    # .env 파일 환경 변수 로드
 requests          # 비동기 HTTP 요청 처리
 aiohttp          # 비동기 HTTP 요청 처리
+pynacl          # 시크릿 파일
