@@ -3,5 +3,5 @@ uvicorn          # ASGI 서버
 sqlalchemy       # ORM 및 데이터베이스 연동
 pymysql          # MySQL 드라이버
 python-dotenv    # .env 파일 환경 변수 로드
+requests          # 비동기 HTTP 요청 처리
 aiohttp          # 비동기 HTTP 요청 처리
-requests
