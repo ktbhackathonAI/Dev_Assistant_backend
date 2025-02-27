@@ -20,8 +20,9 @@ jobs:
           echo "GITHUB_TOKEN=${{ secrets.ENV_GITHUB_TOKEN }}" >> .env
           echo "GITHUB_USERNAME=${{ secrets.ENV_GITHUB_USERNAME }}" >> .env
           echo "AI_SERVICE_URL=${{ secrets.AI_SERVICE_URL }}" >> .env
-          echo "GITHUB_USERNAME=${{ secrets.FRONTEND_URL }}" >> .env
-          echo "GITHUB_USERNAME=${{ secrets.AI_LANGCHAIN_URL }}" >> .env
+          echo "AI_LANGCHAIN_URL=${{ secrets.AI_LANGCHAIN_URL }}" >> .env
+          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
+          echo "FRONTEND_PROD_URL=${{ secrets.FRONTEND_PROD_URL }}" >> .env
 
       - name: Configure Docker Daemon (Allow HTTP Registry)
         run: |
