@@ -15,6 +15,7 @@ app = FastAPI(root_path="/api")
 origins = [
     settings.FRONTEND_URL,      # 예: "http://frontend:3000"
     settings.AI_LANGCHAIN_URL,  # 예: "http://ai-server:8001"
+    settings.FRONTEND_PROD_URL,  # 예: "http://frontend:3000"
 ]
 # CORS 미들웨어 추가
 app.add_middleware(

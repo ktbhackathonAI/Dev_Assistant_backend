@@ -16,6 +16,7 @@ class Settings:
 
     # 외부 서버 URL
     FRONTEND_URL = os.getenv("FRONTEND_URL")  # 프론트엔드 서버와 통신
+    FRONTEND_PROD_URL = os.getenv("FRONTEND_PROD_URL")  # 서버 프론트엔드 서버와 통신
     AI_LANGCHAIN_URL = os.getenv("AI_LANGCHAIN_URL")  # AI 서버와 통신
 
     # 배포를 위한 변수들
