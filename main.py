@@ -8,11 +8,7 @@ from api.github.routes import router as github_router
 from api.cicd.routes import router as cicd_router
 
 # FastAPI 애플리케이션 인스턴스 생성
-app = FastAPI(
-    openapi_url="/openapi.json",  # OpenAPI 문서 URL 경로
-    docs_url="/docs",  # Swagger UI 경로
-    redoc_url="/redoc"  # ReDoc UI 경로
-)
+app = FastAPI(root_path="/api")
 
 # CORS 설정
 # 허용할 출처 목록: 프론트엔드와 AI 서버 URL
