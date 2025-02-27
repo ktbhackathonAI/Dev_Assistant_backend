@@ -23,6 +23,11 @@ jobs:
           echo "AI_LANGCHAIN_URL=${{ secrets.AI_LANGCHAIN_URL }}" >> .env
           echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
           echo "FRONTEND_PROD_URL=${{ secrets.FRONTEND_PROD_URL }}" >> .env
+          echo "NCP_DEV_SERVER_IP=${{ secrets.NCP_DEV_SERVER_IP }}" >> .env
+          echo "NCP_DEV_SSH_PASSWORD=${{ secrets.NCP_DEV_SSH_PASSWORD }}" >> .env
+          echo "NCP_REGISTRY_USER=${{ secrets.NCP_REGISTRY_USER }}" >> .env
+          echo "NCP_REGISTRY_PASSWORD=${{ secrets.NCP_REGISTRY_PASSWORD }}" >> .env
+          echo "JARVIS_DOMAIN=${{ secrets.JARVIS_DOMAIN }}" >> .env
 
       - name: Configure Docker Daemon (Allow HTTP Registry)
         run: |
