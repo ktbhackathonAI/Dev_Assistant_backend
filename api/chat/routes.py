@@ -85,7 +85,7 @@ def get_chat_room_messages(room_id: int, db: Session = Depends(get_db)):
 
     messages = db.query(Message).filter(Message.chat_room_id == room_id).all()
     messages_list = [
-        {"message_id": msg.id, "content": msg.content, "is_system": bool(msg.is_system), "created_at": msg.created_at.isoformat()}
+        {"message_id": msg.id, "content": msg.content, "sender": "system" if bool(msg.is_system) else "user", "is_system": bool(msg.is_system), "created_at": msg.created_at.isoformat()}
         for msg in messages
     ]
     return messages_list
