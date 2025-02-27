@@ -16,13 +16,17 @@ jobs:
 
       - name: Create .env File
         run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "GITHUB_TOKEN=${{ secrets.ENV_GITHUB_TOKEN }}" >> .env
           echo "GITHUB_USERNAME=${{ secrets.ENV_GITHUB_USERNAME }}" >> .env
+          echo "AI_SERVICE_URL=${{ secrets.AI_SERVICE_URL }}" >> .env
+          echo "GITHUB_USERNAME=${{ secrets.FRONTEND_URL }}" >> .env
+          echo "GITHUB_USERNAME=${{ secrets.AI_LANGCHAIN_URL }}" >> .env
 
-      - name: Configure Docker Daemon (Allow HTTP Registry)
-        run: |
-          echo '{ "insecure-registries": ["${{ secrets.JARVIS_DOMAIN }}:5000"] }' | sudo tee /etc/docker/daemon.json
-          sudo systemctl restart docker
+      # - name: Configure Docker Daemon (Allow HTTP Registry)
+      #   run: |
+      #     echo '{ "insecure-registries": ["${{ secrets.JARVIS_DOMAIN }}:5000"] }' | sudo tee /etc/docker/daemon.json
+      #     sudo systemctl restart docker
 
       - name: Login to Private Registry
         run: |
