@@ -6,6 +6,7 @@ from datetime import datetime
 class ChatRoom(Base):
     __tablename__ = "chat_rooms"  # 테이블 이름
     id = Column(Integer, primary_key=True, index=True)  # 고유 식별자, 인덱스 적용
+    name = Column(String(255), nullable=True)      # 채팅방 이름, 선택적
     repo_url = Column(String(255), nullable=True)       # GitHub 리포지토리 URL, 선택적
     created_at = Column(DateTime, default=datetime.utcnow)  # 생성 시간, 기본값 UTC 현재 시간
 

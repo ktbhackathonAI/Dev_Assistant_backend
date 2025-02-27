@@ -24,7 +24,7 @@ def create_chat_room(repo_url: str = None, db: Session = Depends(get_db)):
 def get_chat_rooms(db: Session = Depends(get_db)):
     chat_rooms = db.query(ChatRoom).all()
     rooms_list = [
-        {"room_id": room.id, "repo_url": room.repo_url, "created_at": room.created_at.isoformat()}
+        {"room_id": room.id, "name": room.name, "repo_url": room.repo_url, "created_at": room.created_at.isoformat()}
         for room in chat_rooms
     ]
     return rooms_list
